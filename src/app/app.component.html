@@ -1,0 +1,84 @@
+<div class="app-container">
+  <div class="app-header">
+    <h1 class="app-title">
+      Card Dungeon Adventure
+      <button class="help-btn" (click)="showRules()" title="Game Rules">
+        <span class="help-icon">?</span>
+      </button>
+      <button class="music-btn" (click)="toggleMusic()" [title]="musicService.getIsMuted() ? 'Unmute Music' : 'Mute Music'">
+        <span class="music-icon" [class.muted]="musicService.getIsMuted()">
+          {{ musicService.getIsMuted() ? '🔇' : '🎵' }}
+        </span>
+      </button>
+    </h1>
+  </div>
+
+  <!-- Rules Modal -->
+  <div class="rules-modal" *ngIf="showRulesModal" (click)="closeRules()">
+    <div class="rules-content" (click)="$event.stopPropagation()">
+      <div class="rules-header">
+        <h2>Game Rules</h2>
+        <button class="close-btn" (click)="closeRules()">&times;</button>
+      </div>
+      <div class="rules-body">
+        <div class="rule-section">
+          <h3>🎯 Objective</h3>
+          <p>Survive the dungeons by defeating monsters and managing your health. Your goal is to clear all 52 dungeon cards while maintaining your health above 0.</p>
+        </div>
+
+        <div class="rule-section">
+          <h3>❤️ Hearts (Healing)</h3>
+          <p>Hearts restore your health. Each heart card heals you for its value (2=2, 3=3, ..., 10=10, J=11, Q=12, K=13, A=14). You can use hearts even at full health, but it's wasted healing.</p>
+        </div>
+
+        <div class="rule-section">
+          <h3>💎 Diamonds (Weapons)</h3>
+          <p>Diamonds are weapons you can equip. Each diamond card has attack power equal to its value. You can only have one weapon equipped at a time. Equipping a new weapon replaces the current one.</p>
+        </div>
+
+        <div class="rule-section">
+          <h3>♠️♣️ Spades & Clubs (Monsters)</h3>
+          <p>Spades and clubs are monsters you must fight. Each monster has damage equal to its value. You can fight monsters in two ways:</p>
+          <ul>
+            <li><strong>With a weapon:</strong> If your weapon's attack ≥ monster's damage, you win without taking damage</li>
+            <li><strong>Bare-handed:</strong> You always win but take damage equal to the monster's damage, if your health reaches 0 or less you loose</li>
+          </ul>
+        </div>
+
+        <div class="rule-section">
+          <h3>⚔️ Combat Mechanics</h3>
+          <p>When you defeat a monster with a weapon, that weapon becomes "tired" and can only defeat monsters with damage ≤ the last monster it killed. This creates strategic weapon management.</p>
+        </div>
+
+        <div class="rule-section">
+          <h3>🎮 Game Flow</h3>
+          <ul>
+            <li>Start with 20 health and a basic deck of 52 cards which are randomly shuffled each time</li>
+            <li>4 cards appear and form a dungeon</li>
+            <li>Click cards to use trigger their effects</li>
+            <li>Clear 3 of the 4 dungeon cards to proceed to the next dungeon which will contain your last card from the last dungeon and 3 new cards</li>
+            <li>If your health reaches 0 or less, you lose!</li>
+            <li>If you use all of the 52 cards then you win!</li>
+            <li>Your score increases with each action so that you can compare with other players</li>
+          </ul>
+        </div>
+
+        <div class="rule-section">
+          <h3>⚠️ Visual Indicators</h3>
+          <ul>
+            <li><strong>Red border:</strong> Monster will damage you if fought</li>
+            <li><strong>Orange border:</strong> Healing card is wasted (full health)</li>
+            <li><strong>Disabled cards:</strong> Cannot be used (though all cards are actually usable)</li>
+          </ul>
+        </div>
+
+        <div class="rule-section">
+          <h3>🏆 Victory Conditions</h3>
+          <p>Clear all 52 dungeon cards while keeping your health above 0. The game tracks your score based on your actions and efficiency.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-card-game></app-card-game>
+</div> 

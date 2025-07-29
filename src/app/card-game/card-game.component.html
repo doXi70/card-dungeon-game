@@ -1,0 +1,122 @@
+<div class="game-container">
+  <div class="game-main">
+    <!-- Dungeon Cards -->
+    <div class="dungeon-section">
+      <div class="dungeon-header">
+        <div class="dungeon-title-section">
+          <h3>Dungeon ({{ gameService.dungeon.length }}/4)</h3>
+          <!-- Integrated Weapon Display -->
+          <div class="integrated-weapon" *ngIf="gameService.equippedWeapon">
+            <div class="weapon-card-compact" [class]="gameService.equippedWeapon.suit">
+              <div class="weapon-card-header">
+                <span class="weapon-label">⚔️ Weapon</span>
+              </div>
+              <div class="weapon-card-content">
+                <div class="weapon-value">{{ gameService.equippedWeapon.displayValue }}{{ gameService.equippedWeapon.suitSymbol }}</div>
+                <div class="weapon-damage-compact">{{ gameService.equippedWeapon.damage }} ATK</div>
+              </div>
+              <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage > 0">
+                <span class="status-text">Can kill ≤ {{ gameService.lastKilledMonsterDamage }} DMG</span>
+              </div>
+              <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage === 0">
+                <span class="status-text">Can kill ≤ {{ gameService.equippedWeapon.damage }} DMG</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="game-stats">
+          <div class="stat">
+            <span class="label">Health:</span>
+            <span class="value health">{{ gameService.playerHealth }}/20</span>
+          </div>
+          <div class="stat">
+            <span class="label">Progress:</span>
+            <span class="value">{{ 52 - gameService.deck.length - gameService.dungeon.length }}/52</span>
+          </div>
+          <div class="stat">
+            <span class="label">Deck:</span>
+            <span class="value">{{ gameService.deck.length }} cards</span>
+          </div>
+          <div class="stat">
+            <span class="label">Score:</span>
+            <span class="value">{{ gameService.score }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="dungeon-cards">
+        <div
+          *ngFor="let card of gameService.dungeon; let i = index"
+          class="card dungeon-card"
+          [class]="card.suit"
+          [class.disabled]="!canUseCard(card)"
+          [class.dangerous]="willTakeDamage(card)"
+          [class.wasted]="isHealingWasted(card)"
+          (click)="useCard(card, i)"
+        >
+          <div class="card-value">{{ card.displayValue }}</div>
+          <div class="card-suit">{{ card.suitSymbol }}</div>
+          <div class="card-type">{{ getCardType(card) }}</div>
+          <div class="card-effect">{{ getCardEffect(card) }}</div>
+          <div class="card-warning" *ngIf="willTakeDamage(card)">⚠️ Will take damage!</div>
+          <div class="card-warning wasted-warning" *ngIf="isHealingWasted(card)">⚠️ Healing wasted!</div>
+        </div>
+      </div>
+    </div>
+
+    <!--        &lt;!&ndash; Game Messages &ndash;&gt;-->
+    <!--        <div class="game-messages" *ngIf="gameService.message">-->
+    <!--          <div class="message" [class]="gameService.messageType">-->
+    <!--            {{ gameService.message }}-->
+    <!--          </div>-->
+    <!--        </div>-->
+
+    <!-- Game History Section -->
+    <div class="history-section" *ngIf="gameService.gameStarted && gameService.history.length > 0">
+      <h3>Game History</h3>
+      <div class="history-container">
+        <div
+          *ngFor="let event of gameService.history"
+          class="history-item"
+          [class]="event.type"
+        >
+          <div class="event-time">{{ formatTime(event.timestamp) }}</div>
+          <div class="event-message">{{ event.message }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Game Button -->
+    <div class="start-section" *ngIf="!gameService.gameStarted && !gameService.gameOver">
+      <button class="btn start-btn" (click)="startGame()">Start Game</button>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div class="game-over" *ngIf="gameService.gameOver">
+    <div class="game-over-content" [class.victory]="gameService.gameWon">
+      <div class="game-over-header">
+        <h2>{{ gameService.gameWon ? '🎉 Victory! 🎉' : '💀 Game Over' }}</h2>
+        <p class="game-over-subtitle">
+          {{ gameService.gameWon ? 'You successfully used all 52 cards!' : 'You ran out of health!' }}
+        </p>
+      </div>
+      <div class="game-over-stats">
+        <div class="stat-item">
+          <span class="stat-label">Final Score:</span>
+          <span class="stat-value">{{ gameService.score }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Cards Used:</span>
+          <span class="stat-value">{{ 52 - gameService.deck.length - gameService.dungeon.length }}/52</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Final Health:</span>
+          <span class="stat-value" [class.health-low]="gameService.playerHealth <= 0">{{ gameService.playerHealth }}/20</span>
+        </div>
+      </div>
+      <button class="btn restart-btn" (click)="restartGame()">
+        {{ gameService.gameWon ? 'Play Again' : 'Try Again' }}
+      </button>
+    </div>
+  </div>
+</div> 
