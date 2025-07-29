@@ -5,25 +5,60 @@
       <div class="dungeon-header">
         <div class="dungeon-title-section">
           <h3>Dungeon ({{ gameService.dungeon.length }}/4)</h3>
+
           <!-- Integrated Weapon Display -->
           <div class="integrated-weapon" *ngIf="gameService.equippedWeapon">
-            <div class="weapon-card-compact" [class]="gameService.equippedWeapon.suit">
-              <div class="weapon-card-header">
-                <span class="weapon-label">⚔️ Weapon</span>
+            <div class="weapon-slot">
+              <div class="weapon-visual">
+                <div class="sword-icon">⚔️</div>
+                <div class="weapon-glow"></div>
               </div>
-              <div class="weapon-card-content">
-                <div class="weapon-value">{{ gameService.equippedWeapon.displayValue }}{{ gameService.equippedWeapon.suitSymbol }}</div>
-                <div class="weapon-damage-compact">{{ gameService.equippedWeapon.damage }} ATK</div>
+              <div class="weapon-info">
+                <div class="weapon-name">EQUIPPED SWORD</div>
+                <div class="attack-power">
+                  <span class="power-label">ATTACK POWER</span>
+                  <span class="power-value">{{ gameService.equippedWeapon.damage }}</span>
+                </div>
+                <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage > 0">
+                  <div class="status-container">
+                    <span class="status-label">WEAPON STATUS</span>
+                    <span class="status-value">Tired - Can defeat ≤ {{ gameService.lastKilledMonsterDamage }} DMG</span>
+                  </div>
+                </div>
+                <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage === 0">
+                  <div class="status-container">
+                    <span class="status-label">WEAPON STATUS</span>
+                    <span class="status-value">Ready - Can defeat ≤ {{ gameService.equippedWeapon.damage }} DMG</span>
+                  </div>
+                </div>
               </div>
-              <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage > 0">
-                <span class="status-text">Can kill ≤ {{ gameService.lastKilledMonsterDamage }} DMG</span>
+            </div>
+          </div>
+
+          <!-- Bare Handed Display -->
+          <div class="integrated-weapon" *ngIf="!gameService.equippedWeapon">
+            <div class="bare-handed-slot">
+              <div class="bare-handed-visual">
+                <div class="fist-icon">👊</div>
+                <div class="bare-handed-glow"></div>
               </div>
-              <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage === 0">
-                <span class="status-text">Can kill ≤ {{ gameService.equippedWeapon.damage }} DMG</span>
+              <div class="bare-handed-info">
+                <div class="bare-handed-name">BARE HANDED</div>
+                <div class="bare-handed-power">
+                  <span class="power-label">FIGHTING STYLE</span>
+                  <span class="power-value">Unarmed Combat</span>
+                </div>
+                <div class="bare-handed-status">
+                  <div class="status-container">
+                    <span class="status-label">COMBAT STATUS</span>
+                    <span class="status-value">Will take full damage from all monsters</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
         <div class="game-stats">
           <div class="stat">
             <span class="label">Health:</span>
@@ -47,14 +82,13 @@
         <div
           *ngFor="let card of gameService.dungeon; let i = index"
           class="card dungeon-card"
-          [class]="card.suit"
+          [class]="getCardTypeClass(card)"
           [class.disabled]="!canUseCard(card)"
           [class.dangerous]="willTakeDamage(card)"
           [class.wasted]="isHealingWasted(card)"
           (click)="useCard(card, i)"
         >
-          <div class="card-value">{{ card.displayValue }}</div>
-          <div class="card-suit">{{ card.suitSymbol }}</div>
+          <div class="card-icon">{{ getCardIcon(card) }}</div>
           <div class="card-type">{{ getCardType(card) }}</div>
           <div class="card-effect">{{ getCardEffect(card) }}</div>
           <div class="card-warning" *ngIf="willTakeDamage(card)">⚠️ Will take damage!</div>
@@ -119,4 +153,4 @@
       </button>
     </div>
   </div>
-</div> 
+</div>

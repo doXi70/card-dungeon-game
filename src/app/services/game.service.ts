@@ -182,14 +182,14 @@ export class GameService {
     
     this.refillDungeon();
     this.checkGameEnd();
-    this.logEvent('heal', `Used healing card: ${card.displayValue}${card.suitSymbol}`);
+    this.logEvent('heal', `Used healing card: ${card.heal} HP`);
   }
 
   private equipWeapon(card: Card, index: number): void {
     if (this.equippedWeapon) {
-      this.showMessage(`Discarded ${this.equippedWeapon.displayValue}${this.equippedWeapon.suitSymbol} and equipped ${card.displayValue}${card.suitSymbol}!`, 'info');
+      this.showMessage(`Discarded weapon (${this.equippedWeapon.damage} ATK) and equipped weapon (${card.damage} ATK)!`, 'info');
     } else {
-      this.showMessage(`Equipped ${card.displayValue}${card.suitSymbol}!`, 'success');
+      this.showMessage(`Equipped weapon (${card.damage} ATK)!`, 'success');
     }
     
     this.equippedWeapon = card;
@@ -198,7 +198,7 @@ export class GameService {
     this.lastKilledMonsterDamage = 0; // Reset when equipping new weapon
     this.refillDungeon();
     this.checkGameEnd();
-    this.logEvent('equip', `Equipped weapon: ${card.displayValue}${card.suitSymbol}`);
+    this.logEvent('equip', `Equipped weapon: ${card.damage} ATK`);
   }
 
   private fightMonster(card: Card, index: number): void {
@@ -208,10 +208,10 @@ export class GameService {
       this.removeCardFromDungeon(index);
       this.score += card.damage; // Small score bonus for bravery
       
-      this.showMessage(`Fought ${card.displayValue}${card.suitSymbol} bare-handed! Took ${card.damage} damage!`, 'error');
+      this.showMessage(`Fought monster (${card.damage} DMG) bare-handed! Took ${card.damage} damage!`, 'error');
       this.refillDungeon();
       this.checkGameEnd();
-      this.logEvent('bare_handed', `Fought bare-handed against monster: ${card.displayValue}${card.suitSymbol}`);
+      this.logEvent('bare_handed', `Fought bare-handed against monster: ${card.damage} DMG`);
       return;
     }
 
@@ -222,10 +222,10 @@ export class GameService {
       this.removeCardFromDungeon(index);
       this.score += card.damage; // Small score bonus for bravery
       
-      this.showMessage(`Weapon too weak! Fought ${card.displayValue}${card.suitSymbol} bare-handed! Took ${card.damage} damage!`, 'error');
+      this.showMessage(`Weapon too weak! Fought monster (${card.damage} DMG) bare-handed! Took ${card.damage} damage!`, 'error');
       this.refillDungeon();
       this.checkGameEnd();
-      this.logEvent('bare_handed', `Weapon too weak against monster: ${card.displayValue}${card.suitSymbol}`);
+      this.logEvent('bare_handed', `Weapon too weak against monster: ${card.damage} DMG`);
       return;
     }
 
@@ -236,10 +236,10 @@ export class GameService {
       this.removeCardFromDungeon(index);
       this.score += card.damage; // Small score bonus for bravery
       
-      this.showMessage(`Weapon restriction! Fought ${card.displayValue}${card.suitSymbol} bare-handed! Took ${card.damage} damage!`, 'error');
+      this.showMessage(`Weapon restriction! Fought monster (${card.damage} DMG) bare-handed! Took ${card.damage} damage!`, 'error');
       this.refillDungeon();
       this.checkGameEnd();
-      this.logEvent('bare_handed', `Weapon restriction against monster: ${card.displayValue}${card.suitSymbol}`);
+      this.logEvent('bare_handed', `Weapon restriction against monster: ${card.damage} DMG`);
       return;
     }
 
@@ -248,10 +248,10 @@ export class GameService {
     this.removeCardFromDungeon(index);
     this.score += card.damage * 10;
     
-    this.showMessage(`Defeated ${card.displayValue}${card.suitSymbol} (${card.damage} DMG)!`, 'success');
+    this.showMessage(`Defeated monster (${card.damage} DMG)!`, 'success');
     this.refillDungeon();
     this.checkGameEnd();
-    this.logEvent('kill', `Defeated monster: ${card.displayValue}${card.suitSymbol}`);
+    this.logEvent('kill', `Defeated monster: ${card.damage} DMG`);
   }
 
   discardWeapon(): void {
@@ -260,11 +260,11 @@ export class GameService {
       return;
     }
 
-    const weaponName = `${this.equippedWeapon.displayValue}${this.equippedWeapon.suitSymbol}`;
-    this.showMessage(`Discarded ${weaponName}!`, 'info');
+    const weaponPower = `${this.equippedWeapon.damage} ATK`;
+    this.showMessage(`Discarded weapon (${weaponPower})!`, 'info');
     this.equippedWeapon = null;
     this.lastKilledMonsterDamage = 0;
-    this.logEvent('discard', `Discarded weapon: ${weaponName}`);
+    this.logEvent('discard', `Discarded weapon: ${weaponPower}`);
   }
 
   private removeCardFromDungeon(index: number): void {

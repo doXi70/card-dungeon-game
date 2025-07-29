@@ -106,6 +106,28 @@ export class CardGameComponent implements OnInit {
     return '';
   }
 
+  getCardTypeClass(card: Card): string {
+    if (card.suit === 'spades' || card.suit === 'clubs') {
+      return 'monster-type';
+    } else if (card.suit === 'hearts') {
+      return 'heal-type';
+    } else if (card.suit === 'diamonds') {
+      return 'weapon-type';
+    }
+    return '';
+  }
+
+  getCardIcon(card: Card): string {
+    if (card.suit === 'spades' || card.suit === 'clubs') {
+      return '👹';
+    } else if (card.suit === 'hearts') {
+      return '❤️';
+    } else if (card.suit === 'diamonds') {
+      return '⚔️';
+    }
+    return '';
+  }
+
   formatTime(timestamp: Date): string {
     return timestamp.toLocaleTimeString('en-US', {
       hour12: false,
