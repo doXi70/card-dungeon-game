@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Card } from '../models/card.model';
+import { MusicService } from './music.service';
 
 export interface GameEvent {
   type: 'heal' | 'kill' | 'bare_handed' | 'equip' | 'discard';
@@ -24,7 +25,7 @@ export class GameService {
   lastKilledMonsterDamage: number = 0;
   history: GameEvent[] = [];
 
-  constructor() {
+  constructor(private musicService: MusicService) {
     this.initializeDeck();
   }
 
@@ -96,8 +97,9 @@ export class GameService {
   }
 
   private refillDungeon(): void {
+    // Only refill if we have cards in deck and dungeon is getting low
     if (this.dungeon.length <= 1 && this.deck.length > 0) {
-      const cardsToDraw = 4 - this.dungeon.length;
+      const cardsToDraw = Math.min(4 - this.dungeon.length, this.deck.length);
       const newCards = this.drawCards(cardsToDraw);
       this.dungeon.push(...newCards);
       this.showMessage(`Dungeon refilled with ${newCards.length} new cards!`, 'info');
@@ -132,6 +134,9 @@ export class GameService {
     this.shuffleDeck();
     this.dungeon = this.drawCards(4);
     
+    // Start background music when game starts
+    this.musicService.playMusic();
+    
     this.logEvent('heal', 'Game started!');
     this.showMessage('Game started! Defeat monsters with weapons and heal when needed!', 'info');
   }
@@ -148,6 +153,9 @@ export class GameService {
     this.dungeon = [];
     this.history = [];
     this.initializeDeck();
+    
+    // Don't stop music on restart - let player control it manually
+    // Music will continue playing in the background
   }
 
   useCard(card: Card, index: number): void {
@@ -264,16 +272,21 @@ export class GameService {
   }
 
   private checkGameEnd(): void {
+    // Check for win condition: all 52 cards have been used
     if (this.deck.length === 0 && this.dungeon.length === 0) {
       this.gameWon = true;
       this.gameOver = true;
-      this.showMessage('Congratulations! You cleared the entire deck!', 'success');
-      this.logEvent('heal', 'Game won!');
-    } else if (this.playerHealth <= 0) {
+      this.showMessage('🎉 Congratulations! You used all 52 cards and won the game!', 'success');
+      this.logEvent('heal', 'Game won! All 52 cards used!');
+      // Keep music playing for victory celebration
+    } 
+    // Check for loss condition: health reaches 0 or below
+    else if (this.playerHealth <= 0) {
       this.gameWon = false;
       this.gameOver = true;
-      this.showMessage('Game Over! You ran out of health!', 'error');
-      this.logEvent('heal', 'Game over!');
+      this.showMessage('💀 Game Over! You ran out of health!', 'error');
+      this.logEvent('heal', 'Game over! Health depleted!');
+      // Keep music playing for game over
     }
   }
 
