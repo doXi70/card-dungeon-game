@@ -17,6 +17,7 @@
             "polyfills": [
               "zone.js"
             ],
+            "baseHref": "/card-dungeon-game/",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -41,11 +42,6 @@
                   "maximumWarning": "500kB",
                   "maximumError": "1MB"
                 },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
               ],
               "outputHashing": "all"
             },
