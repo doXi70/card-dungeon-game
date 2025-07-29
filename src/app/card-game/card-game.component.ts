@@ -128,6 +128,20 @@ export class CardGameComponent implements OnInit {
     return '';
   }
 
+  getCurrentWeaponPower(): number {
+    if (!this.gameService.equippedWeapon) {
+      return 0;
+    }
+    
+    // If weapon has a restriction (last killed monster damage), use that as current power
+    if (this.gameService.lastKilledMonsterDamage > 0) {
+      return this.gameService.lastKilledMonsterDamage;
+    }
+    
+    // Otherwise, use the weapon's base damage
+    return this.gameService.equippedWeapon.damage;
+  }
+
   formatTime(timestamp: Date): string {
     return timestamp.toLocaleTimeString('en-US', {
       hour12: false,

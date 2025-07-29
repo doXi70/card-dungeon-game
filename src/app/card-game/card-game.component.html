@@ -1,98 +1,123 @@
 <div class="game-container">
   <div class="game-main">
     <!-- Dungeon Cards -->
-    <div class="dungeon-section">
-      <div class="dungeon-header">
-        <div class="dungeon-title-section">
-          <h3>Dungeon ({{ gameService.dungeon.length }}/4)</h3>
+    <div class="dungeon-section" *ngIf="gameService.gameStarted">
 
-          <!-- Integrated Weapon Display -->
-          <div class="integrated-weapon" *ngIf="gameService.equippedWeapon">
-            <div class="weapon-slot">
-              <div class="weapon-visual">
-                <div class="sword-icon">⚔️</div>
-                <div class="weapon-glow"></div>
-              </div>
-              <div class="weapon-info">
-                <div class="weapon-name">EQUIPPED SWORD</div>
-                <div class="attack-power">
-                  <span class="power-label">ATTACK POWER</span>
-                  <span class="power-value">{{ gameService.equippedWeapon.damage }}</span>
-                </div>
-                <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage > 0">
-                  <div class="status-container">
-                    <span class="status-label">WEAPON STATUS</span>
-                    <span class="status-value">Tired - Can defeat ≤ {{ gameService.lastKilledMonsterDamage }} DMG</span>
-                  </div>
-                </div>
-                <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage === 0">
-                  <div class="status-container">
-                    <span class="status-label">WEAPON STATUS</span>
-                    <span class="status-value">Ready - Can defeat ≤ {{ gameService.equippedWeapon.damage }} DMG</span>
-                  </div>
-                </div>
-              </div>
+      <!-- Player Window -->
+      <div class="player-window">
+        <!-- Integrated Weapon Display -->
+        <div class="integrated-weapon" *ngIf="gameService.equippedWeapon">
+          <div class="weapon-slot">
+            <div class="weapon-visual">
+              <div class="sword-icon">⚔️</div>
+              <div class="weapon-glow"></div>
             </div>
-          </div>
-
-          <!-- Bare Handed Display -->
-          <div class="integrated-weapon" *ngIf="!gameService.equippedWeapon">
-            <div class="bare-handed-slot">
-              <div class="bare-handed-visual">
-                <div class="fist-icon">👊</div>
-                <div class="bare-handed-glow"></div>
+            <div class="weapon-info">
+              <div class="weapon-name">EQUIPPED SWORD</div>
+              <div class="attack-power">
+                <span class="power-label">ATTACK POWER</span>
+                <span class="power-value">{{ getCurrentWeaponPower() }}</span>
               </div>
-              <div class="bare-handed-info">
-                <div class="bare-handed-name">BARE HANDED</div>
-                <div class="bare-handed-power">
-                  <span class="power-label">FIGHTING STYLE</span>
-                  <span class="power-value">Unarmed Combat</span>
+              <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage > 0">
+                <div class="status-container">
+                  <span class="status-label">WEAPON STATUS</span>
+                  <span class="status-value">Tired - Can defeat ≤ {{ gameService.lastKilledMonsterDamage }} DMG</span>
                 </div>
-                <div class="bare-handed-status">
-                  <div class="status-container">
-                    <span class="status-label">COMBAT STATUS</span>
-                    <span class="status-value">Will take full damage from all monsters</span>
-                  </div>
+              </div>
+              <div class="weapon-status" *ngIf="gameService.lastKilledMonsterDamage === 0">
+                <div class="status-container">
+                  <span class="status-label">WEAPON STATUS</span>
+                  <span class="status-value">Ready - Can defeat ≤ {{ gameService.equippedWeapon.damage }} DMG</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Bare Handed Display -->
+        <div class="integrated-weapon" *ngIf="!gameService.equippedWeapon">
+          <div class="bare-handed-slot">
+            <div class="bare-handed-visual">
+              <div class="fist-icon">👊</div>
+              <div class="bare-handed-glow"></div>
+            </div>
+            <div class="bare-handed-info">
+              <div class="bare-handed-name">BARE HANDED</div>
+              <div class="bare-handed-power">
+                <span class="power-label">FIGHTING STYLE</span>
+                <span class="power-value">Unarmed Combat</span>
+              </div>
+              <div class="bare-handed-status">
+                <div class="status-container">
+                  <span class="status-label">COMBAT STATUS</span>
+                  <span class="status-value">Will take full damage from all monsters</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game Stats -->
         <div class="game-stats">
-          <div class="stat">
-            <span class="label">Health:</span>
-            <span class="value health">{{ gameService.playerHealth }}/20</span>
+          <div class="stats-header">
+            <div class="stats-icon">👤</div>
+            <div class="stats-title">PLAYER STATUS</div>
           </div>
-          <div class="stat">
-            <span class="label">Progress:</span>
-            <span class="value">{{ 52 - gameService.deck.length - gameService.dungeon.length }}/52</span>
-          </div>
-          <div class="stat">
-            <span class="label">Deck:</span>
-            <span class="value">{{ gameService.deck.length }} cards</span>
-          </div>
-          <div class="stat">
-            <span class="label">Score:</span>
-            <span class="value">{{ gameService.score }}</span>
+          <div class="stats-list">
+            <div class="stat-item">
+              <div class="stat-icon">❤️</div>
+              <div class="stat-content">
+                <span class="stat-label">HEALTH</span>
+                <span class="stat-value health">{{ gameService.playerHealth }}/20</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">📊</div>
+              <div class="stat-content">
+                <span class="stat-label">PROGRESS</span>
+                <span class="stat-value">{{ 52 - gameService.deck.length - gameService.dungeon.length }}/52</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">🃏</div>
+              <div class="stat-content">
+                <span class="stat-label">DECK</span>
+                <span class="stat-value">{{ gameService.deck.length }} cards</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">🏆</div>
+              <div class="stat-content">
+                <span class="stat-label">SCORE</span>
+                <span class="stat-value">{{ gameService.score }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="dungeon-cards">
-        <div
-          *ngFor="let card of gameService.dungeon; let i = index"
-          class="card dungeon-card"
-          [class]="getCardTypeClass(card)"
-          [class.disabled]="!canUseCard(card)"
-          [class.dangerous]="willTakeDamage(card)"
-          [class.wasted]="isHealingWasted(card)"
-          (click)="useCard(card, i)"
-        >
-          <div class="card-icon">{{ getCardIcon(card) }}</div>
-          <div class="card-type">{{ getCardType(card) }}</div>
-          <div class="card-effect">{{ getCardEffect(card) }}</div>
-          <div class="card-warning" *ngIf="willTakeDamage(card)">⚠️ Will take damage!</div>
-          <div class="card-warning wasted-warning" *ngIf="isHealingWasted(card)">⚠️ Healing wasted!</div>
+
+      <!-- Dungeon Cards Container -->
+      <div class="dungeon-cards-container">
+        <div class="dungeon-cards-header">
+          <div class="dungeon-cards-icon">🗡️</div>
+          <div class="dungeon-cards-title">DUNGEON CARDS</div>
+        </div>
+        <div class="dungeon-cards">
+          <div
+            *ngFor="let card of gameService.dungeon; let i = index"
+            class="card dungeon-card"
+            [class]="getCardTypeClass(card)"
+            [class.disabled]="!canUseCard(card)"
+            [class.dangerous]="willTakeDamage(card)"
+            [class.wasted]="isHealingWasted(card)"
+            (click)="useCard(card, i)"
+          >
+            <div class="card-icon">{{ getCardIcon(card) }}</div>
+            <div class="card-type">{{ getCardType(card) }}</div>
+            <div class="card-effect">{{ getCardEffect(card) }}</div>
+            <div class="card-warning" *ngIf="willTakeDamage(card)">⚠️ Will take damage!</div>
+            <div class="card-warning wasted-warning" *ngIf="isHealingWasted(card)">⚠️ Healing wasted!</div>
+          </div>
         </div>
       </div>
     </div>
